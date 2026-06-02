@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from model import User
+from schemas import User
 from services.user_service import (
         get_all_users, 
         add_users,
