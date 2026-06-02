@@ -28,10 +28,10 @@ def get_id(id:int):
 def add(user:User):
     return add_users(user)
 
-@router.put("/users")
+@router.put("/users/{id}")
 def upuser(id:int,user:User):
     return update_users(id,user)
 
-@router.delete("/users")
+@router.delete("/users/{id}")
 def deluser(id:int):
     return delete_user(id)
