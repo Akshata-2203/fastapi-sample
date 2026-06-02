@@ -1,4 +1,4 @@
-from model import User
+from schemas import User
 
 users=[
 

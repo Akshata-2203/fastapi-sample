@@ -1,6 +1,11 @@
 from fastapi import FastAPI
-from router.user_router import router
-app=FastAPI()
+from database import engine
+from models import Base
 
+Base.metadata.create_all(bind=engine)
 
-app.include_router(router)
+app = FastAPI()
+
+@app.get("/")
+def home():
+    return {"message": "Connected Successfully"}
