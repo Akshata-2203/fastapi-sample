@@ -1,36 +1,35 @@
-from schemas import User
+from sqlalchemy.orm import Session
+from models import User
+from schemas import User as UserSchema
 
-users=[
+def get_all_users(db: Session):
+    return db.query(User).all()
 
-    User(id=1,name="Akshu",age=20,email="akshuchitra2006@gmail.com"),
-    User(id=2,name="Shan",age=25,email="shan@gmail.com")
+def get_user_id(db: Session, id: int):
+    return db.query(User).filter(User.id == id).first()
 
-]
+def add_users(db: Session, user: UserSchema):
+    db_user = User(name=user.name, age=user.age, email=user.email)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return {"message": "Added user successfully"}
 
-def get_all_users():
-    return users
+def update_users(db: Session, id: int, user: UserSchema):
+    db_user = db.query(User).filter(User.id == id).first()
+    if db_user:
+        db_user.name = user.name
+        db_user.age = user.age
+        db_user.email = user.email
+        db.commit()
+        db.refresh(db_user)
+        return {"message": "User updated successfully"}
+    return {"error": "User not found"}
 
-def get_user_id(id:int):
-    for user in users:
-        if user.id ==id:
-            return user
-        
-def add_users(user:User):
-    users.append(user)
-    return {"message":"Added user successfully"}
-
-def update_users(id:int,user:User):
-    for i in range(len(users)):
-        if users[i].id==id:
-            users[i]=user
-            return {"message":"user added successfully"}
-    return{"error":"user not found"}
-
-def delete_user(id:int):
-    for i in range(len(users)):
-        if users[i].id==id:
-            del users[i]
-            return {"message":"User deleted successfully"}
-    return {"error":"user not found"}
-
-
+def delete_user(db: Session, id: int):
+    db_user = db.query(User).filter(User.id == id).first()
+    if db_user:
+        db.delete(db_user)
+        db.commit()
+        return {"message": "User deleted successfully"}
+    return {"error": "User not found"}
